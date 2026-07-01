@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -17,9 +18,10 @@
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
     <div class="fixed top-4 right-4">
-        <a href="admin.html" class="bg-pink-100/80 backdrop-blur text-pink-700 px-5 py-2 rounded-full font-bold shadow-lg hover:bg-pink-200 transition-all border border-pink-200">
+        <!-- เพิ่มฟังก์ชันตรวจสอบรหัสผ่านเมื่อกดปุ่ม -->
+        <button onclick="checkPassword()" class="bg-pink-100/80 backdrop-blur text-pink-700 px-5 py-2 rounded-full font-bold shadow-lg hover:bg-pink-200 transition-all border border-pink-200">
             สำหรับครู/ผู้ปกครอง
-        </a>
+        </button>
     </div>
 
     <div class="w-full max-w-md bg-white/60 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-white/70 text-center">
@@ -54,6 +56,16 @@
         let currentQuestion = 0, score = 0, questions = [], timer, timeLeft = 10, startTime, totalSeconds = 0;
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
+        // ฟังก์ชันตรวจสอบรหัสผ่าน
+        function checkPassword() {
+            const password = prompt("กรุณาใส่รหัสผ่าน 4 ตัว:");
+            if (password === "0816") {
+                window.location.href = "admin.html";
+            } else if (password !== null) {
+                alert("รหัสผ่านไม่ถูกต้อง");
+            }
+        }
+
         function playSound(type) {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
@@ -67,10 +79,9 @@
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.3);
             } else if (type === 'wrong') {
-                // เปลี่ยนเป็น Sawtooth เพื่อให้เสียงมีเนื้อเสียงที่ดู "ดุดัน" ขึ้น
                 osc.type = 'sawtooth';
                 osc.frequency.setValueAtTime(110, audioCtx.currentTime);
-                gain.gain.setValueAtTime(1.0, audioCtx.currentTime); // เพิ่มระดับความดังสูงสุด
+                gain.gain.setValueAtTime(1.0, audioCtx.currentTime);
                 gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.5);
             } else {

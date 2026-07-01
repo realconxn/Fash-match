@@ -7,97 +7,137 @@
     <title>คณิตคิดเร็ว</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-image: url('IMG_0054.png'); background-size: cover; background-position: center; background-attachment: fixed; }
+        body { background-color: #fdf6e3; background-image: url('image.png'); background-size: cover; background-position: center; background-attachment: fixed; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-between p-4">
+<body class="min-h-screen flex flex-col items-center p-4 font-sans text-stone-700">
 
-    <!-- Modal ลืมรหัสผ่าน -->
-    <div id="forgotPassModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white p-6 rounded-2xl w-full max-w-xs shadow-2xl">
-            <h2 class="text-lg font-bold mb-4 text-pink-700">ลืมรหัสผ่าน</h2>
-            <div class="relative w-full mb-4">
-                <input type="password" id="forgotSecretInput" placeholder="กรอกเลขยืนยัน" class="w-full p-3 border rounded-xl outline-pink-500 text-center pr-12">
-                <button type="button" onclick="togglePass('forgotSecretInput')" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                </button>
-            </div>
-            <div class="flex gap-2">
-                <button onclick="confirmForgot()" class="flex-1 bg-pink-500 text-white py-2 rounded-xl font-bold">ยืนยัน</button>
-                <button onclick="closeForgotModal()" class="flex-1 bg-gray-200 py-2 rounded-xl font-bold">ยกเลิก</button>
-            </div>
-        </div>
+    <div class="w-full max-w-md bg-sky-500/80 backdrop-blur-md p-4 rounded-3xl shadow-lg border border-sky-400 text-center mt-10 mb-4">
+        <h1 class="text-2xl font-extrabold text-white">คณิตคิดเร็ว</h1>
     </div>
 
-    <div class="fixed top-4 right-4">
-        <button onclick="showAdminLogin()" class="bg-pink-100/80 backdrop-blur text-pink-700 px-5 py-2 rounded-full font-bold shadow-lg hover:bg-pink-200 transition-all border border-pink-200">
-            สำหรับครู/ผู้ปกครอง
-        </button>
-    </div>
-
-    <!-- ส่วนกลาง -->
-    <div class="w-full max-w-md bg-white/60 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-white/70 text-center mt-20">
-        <div id="student-login-screen">
-            <h1 class="text-3xl font-extrabold text-teal-700 mb-6">คณิตคิดเร็ว</h1>
-            <input type="text" id="name" placeholder="ชื่อ-นามสกุล" class="w-full p-4 mb-3 rounded-xl border border-teal-200 outline-none">
-            <input type="text" id="class" placeholder="ชั้น" class="w-full p-4 mb-3 rounded-xl border border-teal-200 outline-none">
-            <input type="number" id="number" placeholder="เลขที่" class="w-full p-4 mb-4 rounded-xl border border-teal-200 outline-none">
-            <button onclick="startGame()" class="w-full bg-teal-500 text-white font-bold py-4 rounded-xl hover:bg-teal-600 transition-all shadow-lg">เริ่มทำแบบทดสอบ</button>
+    <div id="app" class="w-full max-w-md bg-white/80 backdrop-blur-md p-8 rounded-3xl shadow-xl border border-white/50 text-center flex-grow">
+        <!-- หน้า Login -->
+        <div id="login-screen">
+            <input type="text" id="name" placeholder="ชื่อ-นามสกุล" class="w-full p-4 mb-3 rounded-2xl border border-sky-100 outline-sky-300 bg-sky-50">
+            <input type="text" id="class" placeholder="ชั้น" class="w-full p-4 mb-3 rounded-2xl border border-sky-100 outline-sky-300 bg-sky-50">
+            <input type="number" id="number" placeholder="เลขที่" class="w-full p-4 mb-4 rounded-2xl border border-sky-100 outline-sky-300 bg-sky-50">
+            <button onclick="startQuiz()" class="w-full bg-sky-500 text-white font-bold py-4 rounded-2xl hover:bg-sky-600 shadow-lg transition-transform transform active:scale-95">เริ่มทำแบบทดสอบ</button>
         </div>
 
-        <div id="admin-login-screen" class="hidden">
-            <h1 class="text-2xl font-bold text-pink-700 mb-6">เข้าสู่ระบบ</h1>
-            <div class="relative w-full mb-4">
-                <input type="password" id="adminPass" placeholder="รหัสผ่าน" class="w-full p-4 rounded-xl border border-pink-200 outline-none text-center pr-12">
-                <button type="button" onclick="togglePass('adminPass')" class="absolute right-4 top-4 text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                </button>
+        <!-- หน้า Quiz -->
+        <div id="quiz-screen" class="hidden">
+            <div id="progress" class="font-bold text-sky-600 mb-4 bg-sky-100 py-1 px-3 rounded-full inline-block">ข้อที่ 1/20</div>
+            <div class="flex justify-center mb-6">
+                <div id="timer" class="w-20 h-20 flex items-center justify-center rounded-full border-4 border-rose-300 bg-rose-50 text-rose-600 text-3xl font-bold shadow-inner">10</div>
             </div>
-            <button onclick="verifyAdmin()" class="w-full bg-pink-500 text-white font-bold py-4 rounded-xl hover:bg-pink-600 mb-3">ยืนยันรหัสผ่าน</button>
-            <button onclick="openForgotModal()" class="w-full bg-pink-100 text-pink-600 font-bold py-3 rounded-xl hover:bg-pink-200 mb-3">ลืมรหัสผ่าน?</button>
-            <button onclick="hideAdminLogin()" class="w-full bg-gray-200 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-300">ย้อนกลับ</button>
+            <h2 id="question" class="text-4xl font-bold text-sky-700 mb-8"></h2>
+            <div id="choices" class="grid grid-cols-2 gap-4"></div>
+            <div id="feedback" class="mt-6 text-xl font-bold h-16 text-stone-800"></div>
+        </div>
+
+        <!-- หน้า ผลลัพธ์ -->
+        <div id="result-screen" class="hidden">
+            <h2 class="text-2xl font-bold text-sky-700 mb-4">ผลการทดสอบ</h2>
+            <div id="result-text" class="text-center mb-6 text-stone-700 font-medium"></div>
+            <div id="stars" class="text-4xl mb-6"></div>
+            <!-- ปุ่มทำใหม่ที่กลับไปยังหน้าแรก -->
+            <button onclick="backToStart()" class="w-full bg-sky-500 text-white font-bold py-3 rounded-2xl hover:bg-sky-600 transition-all">ทำใหม่</button>
         </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="w-full text-center py-6 text-teal-800 font-bold text-sm">
-        © 2026 - ห้องเรียนจิ๋ว by นันท์
-    </footer>
 
     <script>
-        if (!localStorage.getItem('adminPassword')) localStorage.setItem('adminPassword', '0816');
-
-        function togglePass(id) {
-            const input = document.getElementById(id);
-            input.type = input.type === 'password' ? 'text' : 'password';
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playTone(freq, duration, type = 'sine') {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + duration);
         }
 
-        function showAdminLogin() { document.getElementById('student-login-screen').classList.add('hidden'); document.getElementById('admin-login-screen').classList.remove('hidden'); }
-        function hideAdminLogin() { document.getElementById('admin-login-screen').classList.add('hidden'); document.getElementById('student-login-screen').classList.remove('hidden'); }
-        
-        function openForgotModal() { document.getElementById('forgotPassModal').classList.remove('hidden'); }
-        function closeForgotModal() { document.getElementById('forgotPassModal').classList.add('hidden'); }
+        const questions = [
+            {q: "2 + 2", a: 4}, {q: "5 + 3", a: 8}, {q: "6 + 4", a: 10}, {q: "7 + 5", a: 12}, {q: "8 + 6", a: 14},
+            {q: "9 + 2", a: 11}, {q: "4 + 4", a: 8}, {q: "3 + 7", a: 10}, {q: "5 + 5", a: 10}, {q: "6 + 6", a: 12},
+            {q: "10 - 2", a: 8}, {q: "8 - 3", a: 5}, {q: "7 - 4", a: 3}, {q: "9 - 5", a: 4}, {q: "6 - 1", a: 5},
+            {q: "12 - 4", a: 8}, {q: "15 - 5", a: 10}, {q: "10 - 6", a: 4}, {q: "9 - 0", a: 9}, {q: "14 - 7", a: 7}
+        ].sort(() => Math.random() - 0.5);
 
-        function confirmForgot() {
-            const secret = document.getElementById('forgotSecretInput').value;
-            if (secret === "0816") {
-                alert("รหัสผ่านปัจจุบันของคุณคือ: " + localStorage.getItem('adminPassword'));
-                closeForgotModal();
-                document.getElementById('forgotSecretInput').value = '';
-            } else {
-                alert("เลขยืนยันไม่ถูกต้อง");
+        let currentQ = 0, score = 0, userData = {}, timer, timeLeft = 10;
+
+        function startQuiz() {
+            userData = { name: document.getElementById('name').value, class: document.getElementById('class').value, number: document.getElementById('number').value };
+            if(!userData.name) return alert("กรุณากรอกชื่อ");
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function backToStart() {
+            currentQ = 0;
+            score = 0;
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        function showQuestion() {
+            if(currentQ >= questions.length) return finishQuiz();
+            timeLeft = 10;
+            document.getElementById('timer').innerText = timeLeft;
+            document.getElementById('progress').innerText = `ข้อที่ ${currentQ + 1}/20`;
+            document.getElementById('feedback').innerText = '';
+            
+            const q = questions[currentQ];
+            document.getElementById('question').innerText = q.q;
+            
+            let choices = [q.a];
+            while(choices.length < 4) {
+                let rand = Math.floor(Math.random() * 20) + 1;
+                if(!choices.includes(rand)) choices.push(rand);
             }
+            choices.sort(() => Math.random() - 0.5);
+
+            document.getElementById('choices').innerHTML = choices.map(c => 
+                `<button onclick="check(${c})" class="p-4 bg-white/70 hover:bg-sky-100 rounded-2xl shadow border border-sky-100 font-bold text-xl transition">${c}</button>`
+            ).join('');
+
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = timeLeft;
+                if (timeLeft <= 3 && timeLeft > 0) playTone(440, 0.2);
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    document.getElementById('feedback').innerHTML = `หมดเวลา! เฉลยคือ ${questions[currentQ].a}<br>ลองใหม่นะคนเก่ง!`;
+                    playTone(100, 0.6, 'sawtooth');
+                    setTimeout(nextQ, 1500);
+                }
+            }, 1000);
         }
 
-        function verifyAdmin() {
-            if (document.getElementById('adminPass').value === localStorage.getItem('adminPassword')) {
-                window.location.href = "admin.html";
+        function check(ans) {
+            clearInterval(timer);
+            if(ans === questions[currentQ].a) {
+                score++;
+                document.getElementById('feedback').innerText = "ถูกต้อง! ✅";
+                playTone(880, 0.3);
             } else {
-                alert("รหัสผ่านไม่ถูกต้อง");
+                document.getElementById('feedback').innerHTML = `ผิดนะ! คำตอบคือ ${questions[currentQ].a} ❌`;
+                playTone(100, 0.6, 'sawtooth');
             }
+            setTimeout(nextQ, 1500);
         }
 
-        function startGame() { alert("เริ่มเกม..."); }
+        function nextQ() { currentQ++; showQuestion(); }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            let stars = score <= 4 ? "⭐" : score <= 8 ? "⭐⭐" : score <= 12 ? "⭐⭐⭐" : score <= 16 ? "⭐⭐⭐⭐" : "⭐⭐⭐⭐⭐";
+            document.getElementById('result-text').innerHTML = `ชื่อ: ${userData.name}<br>ชั้น: ${userData.class} เลขที่: ${userData.number}<br>คะแนนที่ได้: ${score}/20 คะแนน`;
+            document.getElementById('stars').innerText = stars;
+        }
     </script>
 </body>
 </html>

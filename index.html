@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -6,12 +7,7 @@
     <title>คณิตคิดเร็ว</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { 
-            background-image: url('IMG_0054.png'); 
-            background-size: cover; 
-            background-position: center; 
-            background-attachment: fixed; 
-        }
+        body { background-image: url('IMG_0054.png'); background-size: cover; background-position: center; background-attachment: fixed; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
@@ -23,7 +19,6 @@
     </div>
 
     <div class="w-full max-w-md bg-white/60 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-white/70 text-center">
-        
         <!-- หน้า Login นักเรียน -->
         <div id="student-login-screen">
             <h1 class="text-3xl font-extrabold text-teal-700 mb-6">คณิตคิดเร็ว</h1>
@@ -36,20 +31,19 @@
         <!-- หน้า Login ครู -->
         <div id="admin-login-screen" class="hidden">
             <h1 class="text-2xl font-bold text-pink-700 mb-6">เข้าสู่ระบบผู้ดูแล</h1>
-            <input type="password" id="adminPass" placeholder="รหัสผ่าน 4 ตัว" class="w-full p-4 mb-4 rounded-xl border border-pink-200 outline-none text-center tracking-widest">
+            <input type="password" id="adminPass" placeholder="รหัสผ่าน" class="w-full p-4 mb-4 rounded-xl border border-pink-200 outline-none text-center tracking-widest">
             <button onclick="verifyAdmin()" class="w-full bg-pink-500 text-white font-bold py-4 rounded-xl hover:bg-pink-600 mb-3">ยืนยันรหัสผ่าน</button>
             <button onclick="forgotPassword()" class="w-full bg-pink-100 text-pink-600 font-bold py-3 rounded-xl hover:bg-pink-200 mb-3">ลืมรหัสผ่าน?</button>
             <button onclick="hideAdminLogin()" class="w-full bg-gray-200 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-300">ย้อนกลับ</button>
         </div>
-
-        <!-- หน้า Quiz -->
-        <div id="quiz-screen" class="hidden">
-            <div id="question" class="text-5xl font-black text-teal-900 mb-6">? + ?</div>
-            <div id="choices" class="grid grid-cols-2 gap-4"></div>
-        </div>
     </div>
 
     <script>
+        // เริ่มต้นรหัสผ่านถ้ายังไม่มี
+        if (!localStorage.getItem('adminPassword')) {
+            localStorage.setItem('adminPassword', '0816');
+        }
+
         function showAdminLogin() {
             document.getElementById('student-login-screen').classList.add('hidden');
             document.getElementById('admin-login-screen').classList.remove('hidden');
@@ -61,7 +55,9 @@
         }
 
         function verifyAdmin() {
-            if (document.getElementById('adminPass').value === "0816") {
+            const pass = document.getElementById('adminPass').value;
+            const savedPass = localStorage.getItem('adminPassword');
+            if (pass === savedPass) {
                 window.location.href = "admin.html";
             } else {
                 alert("รหัสผ่านไม่ถูกต้อง");
@@ -69,18 +65,23 @@
         }
 
         function forgotPassword() {
-            const secret = prompt("กรุณากรอกรหัสลับเพื่อยืนยัน:");
+            const secret = prompt("กรุณากรอกเลขยืนยัน (0816):");
             if (secret === "0816") {
-                alert("รหัสผ่านคือ: 0816");
+                alert("รหัสผ่านปัจจุบันของคุณคือ: " + localStorage.getItem('adminPassword'));
             } else {
-                alert("รหัสไม่ถูกต้อง");
+                alert("เลขยืนยันไม่ถูกต้อง");
             }
+        }
+
+        // ตัวอย่างฟังก์ชันสำหรับเปลี่ยนรหัสผ่าน (ใช้ในหน้า admin.html)
+        function changePassword(newPass) {
+            localStorage.setItem('adminPassword', newPass);
+            alert("เปลี่ยนรหัสผ่านสำเร็จ!");
         }
 
         function startGame() {
             if(!document.getElementById('name').value) return alert("กรุณากรอกข้อมูลให้ครบ");
-            document.getElementById('student-login-screen').classList.add('hidden');
-            document.getElementById('quiz-screen').classList.remove('hidden');
+            alert("เริ่มเกม...");
         }
     </script>
 </body>

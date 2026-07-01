@@ -1,0 +1,95 @@
+```html
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ผลคะแนนนักเรียน</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body { 
+            background-image: url('IMG_0054.png'); 
+            background-size: cover; 
+            background-position: center; 
+            background-attachment: fixed; 
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto bg-white/70 backdrop-blur-xl p-6 rounded-3xl shadow-2xl border border-white/70">
+        <header class="flex justify-between items-center mb-8 border-b border-teal-200 pb-4">
+            <h1 class="text-2xl font-bold text-teal-800">ผลคะแนนนักเรียน</h1>
+            <a href="index.html" class="bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition shadow-md">ย้อนกลับ</a>
+        </header>
+
+        <div class="flex flex-wrap gap-2 mb-6">
+            <button onclick="copyTable()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition shadow-md">คัดลอกข้อมูล</button>
+            <button onclick="exportExcel()" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition shadow-md">บันทึกเป็น Excel</button>
+            <button onclick="window.print()" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition shadow-md">บันทึกเป็น PDF</button>
+            <button onclick="clearData()" class="bg-rose-500 text-white px-4 py-2 rounded-lg hover:bg-rose-600 transition shadow-md">ลบข้อมูลทั้งหมด</button>
+        </div>
+
+        <div class="overflow-x-auto bg-white/50 rounded-xl p-2">
+            <table class="w-full text-left border-collapse" id="scoreTable">
+                <thead>
+                    <tr class="bg-teal-600 text-white">
+                        <th class="p-3 border border-teal-500">ชื่อ-นามสกุล</th>
+                        <th class="p-3 border border-teal-500">ชั้น</th>
+                        <th class="p-3 border border-teal-500">เลขที่</th>
+                        <th class="p-3 border border-teal-500">คะแนน</th>
+                        <th class="p-3 border border-teal-500">เวลา (วิ)</th>
+                        <th class="p-3 border border-teal-500">วันที่</th>
+                    </tr>
+                </thead>
+                <tbody id="scoreBody" class="text-teal-900 font-medium"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function loadData() {
+            const data = JSON.parse(localStorage.getItem('studentHistory') || '[]');
+            const tbody = document.getElementById('scoreBody');
+            tbody.innerHTML = data.map(item => `
+                <tr class="border-b border-teal-200 hover:bg-white/50 transition">
+                    <td class="p-3 border border-teal-200">${item.name}</td>
+                    <td class="p-3 border border-teal-200">${item.class}</td>
+                    <td class="p-3 border border-teal-200">${item.number}</td>
+                    <td class="p-3 border border-teal-200">${item.score}/10</td>
+                    <td class="p-3 border border-teal-200">${item.time}</td>
+                    <td class="p-3 border border-teal-200">${item.date}</td>
+                </tr>
+            `).join('');
+        }
+
+        function copyTable() {
+            const table = document.getElementById('scoreTable');
+            let range = document.createRange();
+            range.selectNode(table);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            alert("คัดลอกข้อมูลลงคลิปบอร์ดแล้ว");
+        }
+
+        function exportExcel() {
+            const table = document.getElementById('scoreTable');
+            const wb = XLSX.utils.table_to_book(table);
+            XLSX.writeFile(wb, 'ScoreData.xlsx');
+        }
+
+        function clearData() {
+            if(confirm("ยืนยันการลบข้อมูลทั้งหมด?")) {
+                localStorage.removeItem('studentHistory');
+                loadData();
+            }
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
+
+```

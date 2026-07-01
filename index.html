@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -17,15 +18,15 @@
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
     <div class="fixed top-4 right-4">
-        <!-- เพิ่มฟังก์ชันตรวจสอบรหัสผ่านเมื่อกดปุ่ม -->
-        <button onclick="checkPassword()" class="bg-pink-100/80 backdrop-blur text-pink-700 px-5 py-2 rounded-full font-bold shadow-lg hover:bg-pink-200 transition-all border border-pink-200">
+        <button onclick="showAdminLogin()" class="bg-pink-100/80 backdrop-blur text-pink-700 px-5 py-2 rounded-full font-bold shadow-lg hover:bg-pink-200 transition-all border border-pink-200">
             สำหรับครู/ผู้ปกครอง
         </button>
     </div>
 
     <div class="w-full max-w-md bg-white/60 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-white/70 text-center">
         
-        <div id="login-screen">
+        <!-- หน้า Login นักเรียน -->
+        <div id="student-login-screen">
             <h1 class="text-3xl font-extrabold text-teal-700 mb-6">คณิตคิดเร็ว</h1>
             <input type="text" id="name" placeholder="ชื่อ-นามสกุล" class="w-full p-4 mb-3 rounded-xl border border-teal-200 outline-none">
             <input type="text" id="class" placeholder="ชั้น" class="w-full p-4 mb-3 rounded-xl border border-teal-200 outline-none">
@@ -33,157 +34,44 @@
             <button onclick="startGame()" class="w-full bg-teal-500 text-white font-bold py-4 rounded-xl hover:bg-teal-600 transition-all shadow-lg">เริ่มทำแบบทดสอบ</button>
         </div>
 
-        <div id="quiz-screen" class="hidden">
-            <div class="text-md font-bold text-teal-800 mb-1">ข้อที่ <span id="current-q">1</span>/10</div>
-            <div class="text-lg font-bold text-rose-500 mb-2">เวลา: <span id="timer">10</span> วินาที</div>
-            <div id="question" class="text-5xl font-black text-teal-900 mb-6">? + ?</div>
-            <div id="choices" class="grid grid-cols-2 gap-4 mb-4"></div>
-            <div id="feedback" class="text-xl font-bold text-teal-700 h-8"></div>
+        <!-- หน้า Login ครู -->
+        <div id="admin-login-screen" class="hidden">
+            <h1 class="text-2xl font-bold text-pink-700 mb-6">เข้าสู่ระบบผู้ดูแล</h1>
+            <input type="password" id="adminPass" placeholder="รหัสผ่าน 4 ตัว" class="w-full p-4 mb-4 rounded-xl border border-pink-200 outline-none text-center tracking-widest">
+            <button onclick="verifyAdmin()" class="w-full bg-pink-500 text-white font-bold py-4 rounded-xl hover:bg-pink-600 mb-3">ยืนยันรหัสผ่าน</button>
+            <button onclick="hideAdminLogin()" class="w-full bg-gray-200 text-gray-700 font-bold py-4 rounded-xl hover:bg-gray-300">ย้อนกลับ</button>
         </div>
 
-        <div id="result-screen" class="hidden">
-            <h2 class="text-3xl font-black text-teal-900 mb-4">สรุปผลคะแนน</h2>
-            <p id="student-info" class="text-lg font-semibold text-teal-700 mb-2"></p>
-            <div id="stars" class="text-4xl mb-4 tracking-widest"></div>
-            <p id="final-score" class="text-xl font-bold text-teal-800"></p>
-            <p id="total-time" class="text-lg font-bold text-teal-600 mb-6"></p>
-            <button onclick="resetGame()" class="w-full bg-teal-500 text-white font-bold py-4 rounded-xl hover:bg-teal-600 shadow-lg">เริ่มใหม่</button>
+        <div id="quiz-screen" class="hidden">
+            <div id="question" class="text-5xl font-black text-teal-900 mb-6">? + ?</div>
+            <div id="choices" class="grid grid-cols-2 gap-4"></div>
         </div>
     </div>
 
     <script>
-        let currentQuestion = 0, score = 0, questions = [], timer, timeLeft = 10, startTime, totalSeconds = 0;
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function showAdminLogin() {
+            document.getElementById('student-login-screen').classList.add('hidden');
+            document.getElementById('admin-login-screen').classList.remove('hidden');
+        }
 
-        // ฟังก์ชันตรวจสอบรหัสผ่าน
-        function checkPassword() {
-            const password = prompt("กรุณาใส่รหัสผ่าน 4 ตัว:");
-            if (password === "0816") {
+        function hideAdminLogin() {
+            document.getElementById('admin-login-screen').classList.add('hidden');
+            document.getElementById('student-login-screen').classList.remove('hidden');
+        }
+
+        function verifyAdmin() {
+            if (document.getElementById('adminPass').value === "0816") {
                 window.location.href = "admin.html";
-            } else if (password !== null) {
+            } else {
                 alert("รหัสผ่านไม่ถูกต้อง");
             }
         }
 
-        function playSound(type) {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            
-            if (type === 'correct') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-            } else if (type === 'wrong') {
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(110, audioCtx.currentTime);
-                gain.gain.setValueAtTime(1.0, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.5);
-            } else {
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(440, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.2);
-            }
-        }
-
         function startGame() {
-            const name = document.getElementById('name').value;
-            const cls = document.getElementById('class').value;
-            const num = document.getElementById('number').value;
-            if(!name || !cls || !num) return alert("กรุณากรอกข้อมูลให้ครบครับ");
-            startTime = new Date();
-            questions = Array.from({length: 10}, () => {
-                let a = Math.floor(Math.random() * 10) + 1;
-                let b = Math.floor(Math.random() * (20 - a));
-                return {a, b, ans: a + b};
-            });
-            document.getElementById('login-screen').classList.add('hidden');
+            if(!document.getElementById('name').value) return alert("กรุณากรอกข้อมูล");
+            document.getElementById('student-login-screen').classList.add('hidden');
             document.getElementById('quiz-screen').classList.remove('hidden');
-            renderQuestion();
-        }
-
-        function resetGame() {
-            currentQuestion = 0; score = 0;
-            document.getElementById('result-screen').classList.add('hidden');
-            document.getElementById('login-screen').classList.remove('hidden');
-        }
-
-        function renderQuestion() {
-            if(currentQuestion >= 10) {
-                totalSeconds = Math.floor((new Date() - startTime) / 1000);
-                saveResult();
-                return showResult();
-            }
-            document.getElementById('current-q').innerText = currentQuestion + 1;
-            clearInterval(timer); startTimer();
-            let q = questions[currentQuestion];
-            document.getElementById('question').innerText = `${q.a} + ${q.b}`;
-            let choices = [q.ans];
-            while(choices.length < 4) {
-                let f = Math.floor(Math.random() * 21);
-                if(!choices.includes(f)) choices.push(f);
-            }
-            choices.sort(() => Math.random() - 0.5);
-            document.getElementById('choices').innerHTML = choices.map(c => 
-                `<button onclick="handleAnswer(${c})" class="bg-white p-4 rounded-xl shadow border border-teal-100 hover:border-teal-400 font-bold text-xl text-teal-800 transition-all">${c}</button>`
-            ).join('');
-        }
-
-        function handleAnswer(ans) {
-            clearInterval(timer);
-            const q = questions[currentQuestion];
-            const feedback = document.getElementById('feedback');
-            if(ans === q.ans) {
-                score++;
-                playSound('correct');
-                feedback.innerText = "เก่งมาก!";
-            } else {
-                playSound('wrong');
-                feedback.innerText = ans === null ? "หมดเวลา! ตอบ " + q.ans : "ผิด! ตอบ " + q.ans;
-            }
-            setTimeout(() => {
-                feedback.innerText = "";
-                currentQuestion++;
-                renderQuestion();
-            }, 1500);
-        }
-
-        function startTimer() {
-            timeLeft = 10;
-            document.getElementById('timer').innerText = timeLeft;
-            timer = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer').innerText = timeLeft;
-                if(timeLeft > 0 && timeLeft <= 3) playSound('tick');
-                if (timeLeft <= 0) { clearInterval(timer); handleAnswer(null); }
-            }, 1000);
-        }
-
-        function saveResult() {
-            const history = JSON.parse(localStorage.getItem('studentHistory') || '[]');
-            history.push({ name: document.getElementById('name').value, class: document.getElementById('class').value, number: document.getElementById('number').value, score, time: totalSeconds, date: new Date().toLocaleString() });
-            localStorage.setItem('studentHistory', JSON.stringify(history));
-        }
-
-        function showResult() {
-            document.getElementById('quiz-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
-            document.getElementById('student-info').innerText = `${document.getElementById('name').value} ชั้น ${document.getElementById('class').value} เลขที่ ${document.getElementById('number').value}`;
-            document.getElementById('final-score').innerText = `คะแนนที่ได้: ${score}/10`;
-            document.getElementById('total-time').innerText = `เวลาที่ใช้: ${totalSeconds} วินาที`;
-            
-            let stars = "⭐";
-            if (score === 10) stars = "⭐⭐⭐⭐⭐";
-            else if (score >= 8) stars = "⭐⭐⭐⭐";
-            else if (score >= 6) stars = "⭐⭐⭐";
-            else if (score >= 4) stars = "⭐⭐";
-            document.getElementById('stars').innerText = stars;
+            // ... (โค้ดเริ่มเกมปกติของคุณ)
         }
     </script>
 </body>

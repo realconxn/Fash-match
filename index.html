@@ -4,139 +4,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>คณิตคิดเร็ว</title>
+    <title>คณิตคิดเร็ว - ห้องเรียนจิ๋ว</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #fdf6e3; background-image: url('image.png'); background-size: cover; background-position: center; background-attachment: fixed; }
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap');
+        body { 
+            background-image: url('IMG_0054.png'); 
+            background-size: cover; 
+            background-position: center; 
+            background-attachment: fixed;
+            font-family: 'Sarabun', sans-serif;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center p-4 font-sans text-stone-700">
+<body class="min-h-screen flex flex-col items-center p-4">
 
-    <div class="w-full max-w-md bg-sky-500/80 backdrop-blur-md p-4 rounded-3xl shadow-lg border border-sky-400 text-center mt-10 mb-4">
-        <h1 class="text-2xl font-extrabold text-white">คณิตคิดเร็ว</h1>
+    <!-- ปุ่มเมนูคุณครู -->
+    <div class="fixed top-4 right-4 z-40">
+        <button onclick="openModal('admin-modal')" class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg transition-all duration-300 border-2 border-white/50 backdrop-blur-md">
+            สำหรับครู / ผู้ปกครอง
+        </button>
     </div>
 
-    <div id="app" class="w-full max-w-md bg-white/80 backdrop-blur-md p-8 rounded-3xl shadow-xl border border-white/50 text-center flex-grow">
-        <!-- หน้า Login -->
-        <div id="login-screen">
-            <input type="text" id="name" placeholder="ชื่อ-นามสกุล" class="w-full p-4 mb-3 rounded-2xl border border-sky-100 outline-sky-300 bg-sky-50">
-            <input type="text" id="class" placeholder="ชั้น" class="w-full p-4 mb-3 rounded-2xl border border-sky-100 outline-sky-300 bg-sky-50">
-            <input type="number" id="number" placeholder="เลขที่" class="w-full p-4 mb-4 rounded-2xl border border-sky-100 outline-sky-300 bg-sky-50">
-            <button onclick="startQuiz()" class="w-full bg-sky-500 text-white font-bold py-4 rounded-2xl hover:bg-sky-600 shadow-lg transition-transform transform active:scale-95">เริ่มทำแบบทดสอบ</button>
-        </div>
+    <!-- ส่วนหัวข้อหลัก -->
+    <div class="w-full max-w-lg bg-white/40 backdrop-blur-xl p-6 rounded-3xl shadow-xl border border-white/60 text-center mt-12 mb-6">
+        <h1 class="text-4xl font-extrabold text-sky-700 drop-shadow-sm">คณิตคิดเร็ว</h1>
+    </div>
 
-        <!-- หน้า Quiz -->
-        <div id="quiz-screen" class="hidden">
-            <div id="progress" class="font-bold text-sky-600 mb-4 bg-sky-100 py-1 px-3 rounded-full inline-block">ข้อที่ 1/20</div>
-            <div class="flex justify-center mb-6">
-                <div id="timer" class="w-20 h-20 flex items-center justify-center rounded-full border-4 border-rose-300 bg-rose-50 text-rose-600 text-3xl font-bold shadow-inner">10</div>
+    <!-- ส่วนเนื้อหาหลัก -->
+    <div id="app" class="w-full max-w-lg bg-white/30 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl border border-white/50 text-center flex-grow">
+        <div id="login-screen" class="space-y-4">
+            <input type="text" id="name" placeholder="ชื่อ-นามสกุล" class="w-full p-4 rounded-2xl bg-white/70 border-2 border-white focus:border-sky-400 outline-none shadow-sm transition">
+            <input type="text" id="class" placeholder="ชั้น" class="w-full p-4 rounded-2xl bg-white/70 border-2 border-white focus:border-sky-400 outline-none shadow-sm transition">
+            <input type="number" id="number" placeholder="เลขที่" class="w-full p-4 rounded-2xl bg-white/70 border-2 border-white focus:border-sky-400 outline-none shadow-sm transition">
+            <button onclick="alert('เริ่มเกม...')" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold text-xl py-4 rounded-2xl shadow-lg transition-all transform hover:scale-[1.02]">เริ่มทำแบบทดสอบ</button>
+        </div>
+    </div>
+
+    <footer class="mt-8 text-white font-bold text-sm drop-shadow-md">© 2026 - ห้องเรียนจิ๋ว by นันท์</footer>
+
+    <!-- Modals (Admin & Forgot) -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/40 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white/90 backdrop-blur-lg p-8 rounded-3xl w-full max-w-sm text-center shadow-2xl border border-white">
+            <h2 class="text-2xl font-bold mb-6 text-sky-700">เข้าสู่ระบบคุณครู</h2>
+            <div class="relative mb-4">
+                <input type="password" id="admin-pass" placeholder="รหัสผ่าน" class="w-full p-4 pr-12 rounded-xl border-2 border-gray-200 bg-white/50">
+                <button type="button" onclick="togglePass('admin-pass')" class="absolute right-4 top-4 text-gray-500">👁️</button>
             </div>
-            <h2 id="question" class="text-4xl font-bold text-sky-700 mb-8"></h2>
-            <div id="choices" class="grid grid-cols-2 gap-4"></div>
-            <div id="feedback" class="mt-6 text-xl font-bold h-16 text-stone-800"></div>
+            <button onclick="checkAdmin()" class="w-full bg-sky-600 hover:bg-sky-700 text-white py-3 rounded-xl font-bold mb-3 transition">ตกลง</button>
+            <button onclick="closeModals(); openModal('forgot-modal')" class="text-sm text-pink-600 underline">ลืมรหัสผ่าน</button>
         </div>
+    </div>
 
-        <!-- หน้า ผลลัพธ์ -->
-        <div id="result-screen" class="hidden">
-            <h2 class="text-2xl font-bold text-sky-700 mb-4">ผลการทดสอบ</h2>
-            <div id="result-text" class="text-center mb-6 text-stone-700 font-medium"></div>
-            <div id="stars" class="text-4xl mb-6"></div>
-            <!-- ปุ่มทำใหม่ที่กลับไปยังหน้าแรก -->
-            <button onclick="backToStart()" class="w-full bg-sky-500 text-white font-bold py-3 rounded-2xl hover:bg-sky-600 transition-all">ทำใหม่</button>
+    <div id="forgot-modal" class="fixed inset-0 bg-black/40 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white/90 backdrop-blur-lg p-8 rounded-3xl w-full max-w-sm text-center shadow-2xl border border-white">
+            <h2 class="text-2xl font-bold mb-6 text-pink-600">กู้คืนรหัสผ่าน</h2>
+            <div class="relative mb-4">
+                <input type="password" id="forgot-key" placeholder="รหัสยืนยัน (0816)" class="w-full p-4 pr-12 rounded-xl border-2 border-gray-200 bg-white/50">
+                <button type="button" onclick="togglePass('forgot-key')" class="absolute right-4 top-4 text-gray-500">👁️</button>
+            </div>
+            <button onclick="verifyForgot()" class="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-xl font-bold transition">ยืนยัน</button>
         </div>
     </div>
 
     <script>
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playTone(freq, duration, type = 'sine') {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(); osc.stop(audioCtx.currentTime + duration);
+        if (!localStorage.getItem('adminPass')) localStorage.setItem('adminPass', '0816');
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModals() { document.getElementById('admin-modal').classList.add('hidden'); document.getElementById('forgot-modal').classList.add('hidden'); }
+        function togglePass(id) { const input = document.getElementById(id); input.type = (input.type === 'password') ? 'text' : 'password'; }
+
+        function checkAdmin() {
+            if (document.getElementById('admin-pass').value === localStorage.getItem('adminPass')) window.location.href = 'admin.html';
+            else alert("รหัสผ่านไม่ถูกต้อง!");
         }
 
-        const questions = [
-            {q: "2 + 2", a: 4}, {q: "5 + 3", a: 8}, {q: "6 + 4", a: 10}, {q: "7 + 5", a: 12}, {q: "8 + 6", a: 14},
-            {q: "9 + 2", a: 11}, {q: "4 + 4", a: 8}, {q: "3 + 7", a: 10}, {q: "5 + 5", a: 10}, {q: "6 + 6", a: 12},
-            {q: "10 - 2", a: 8}, {q: "8 - 3", a: 5}, {q: "7 - 4", a: 3}, {q: "9 - 5", a: 4}, {q: "6 - 1", a: 5},
-            {q: "12 - 4", a: 8}, {q: "15 - 5", a: 10}, {q: "10 - 6", a: 4}, {q: "9 - 0", a: 9}, {q: "14 - 7", a: 7}
-        ].sort(() => Math.random() - 0.5);
-
-        let currentQ = 0, score = 0, userData = {}, timer, timeLeft = 10;
-
-        function startQuiz() {
-            userData = { name: document.getElementById('name').value, class: document.getElementById('class').value, number: document.getElementById('number').value };
-            if(!userData.name) return alert("กรุณากรอกชื่อ");
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('quiz-screen').classList.remove('hidden');
-            showQuestion();
-        }
-
-        function backToStart() {
-            currentQ = 0;
-            score = 0;
-            document.getElementById('result-screen').classList.add('hidden');
-            document.getElementById('login-screen').classList.remove('hidden');
-        }
-
-        function showQuestion() {
-            if(currentQ >= questions.length) return finishQuiz();
-            timeLeft = 10;
-            document.getElementById('timer').innerText = timeLeft;
-            document.getElementById('progress').innerText = `ข้อที่ ${currentQ + 1}/20`;
-            document.getElementById('feedback').innerText = '';
-            
-            const q = questions[currentQ];
-            document.getElementById('question').innerText = q.q;
-            
-            let choices = [q.a];
-            while(choices.length < 4) {
-                let rand = Math.floor(Math.random() * 20) + 1;
-                if(!choices.includes(rand)) choices.push(rand);
-            }
-            choices.sort(() => Math.random() - 0.5);
-
-            document.getElementById('choices').innerHTML = choices.map(c => 
-                `<button onclick="check(${c})" class="p-4 bg-white/70 hover:bg-sky-100 rounded-2xl shadow border border-sky-100 font-bold text-xl transition">${c}</button>`
-            ).join('');
-
-            timer = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer').innerText = timeLeft;
-                if (timeLeft <= 3 && timeLeft > 0) playTone(440, 0.2);
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    document.getElementById('feedback').innerHTML = `หมดเวลา! เฉลยคือ ${questions[currentQ].a}<br>ลองใหม่นะคนเก่ง!`;
-                    playTone(100, 0.6, 'sawtooth');
-                    setTimeout(nextQ, 1500);
-                }
-            }, 1000);
-        }
-
-        function check(ans) {
-            clearInterval(timer);
-            if(ans === questions[currentQ].a) {
-                score++;
-                document.getElementById('feedback').innerText = "ถูกต้อง! ✅";
-                playTone(880, 0.3);
-            } else {
-                document.getElementById('feedback').innerHTML = `ผิดนะ! คำตอบคือ ${questions[currentQ].a} ❌`;
-                playTone(100, 0.6, 'sawtooth');
-            }
-            setTimeout(nextQ, 1500);
-        }
-
-        function nextQ() { currentQ++; showQuestion(); }
-
-        function finishQuiz() {
-            document.getElementById('quiz-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
-            let stars = score <= 4 ? "⭐" : score <= 8 ? "⭐⭐" : score <= 12 ? "⭐⭐⭐" : score <= 16 ? "⭐⭐⭐⭐" : "⭐⭐⭐⭐⭐";
-            document.getElementById('result-text').innerHTML = `ชื่อ: ${userData.name}<br>ชั้น: ${userData.class} เลขที่: ${userData.number}<br>คะแนนที่ได้: ${score}/20 คะแนน`;
-            document.getElementById('stars').innerText = stars;
+        function verifyForgot() {
+            if (document.getElementById('forgot-key').value === '0816') {
+                alert("รหัสผ่านปัจจุบันของคุณคือ: " + localStorage.getItem('adminPass'));
+                closeModals();
+            } else { alert("รหัสยืนยันไม่ถูกต้อง!"); }
         }
     </script>
 </body>

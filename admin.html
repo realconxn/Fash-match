@@ -7,11 +7,13 @@
     <title>สำหรับคุณครู/ผู้ปกครอง</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- เพิ่ม Library สำหรับสร้าง PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <style>
         body { background-image: url('IMG_0054.png'); background-size: cover; background-position: center; background-attachment: fixed; }
+        @media print {
+            .no-print { display: none; }
+            body { background: none; }
+            .print-area { padding: 0; }
+        }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-8">
@@ -33,17 +35,17 @@
         </div>
     </div>
 
-    <div class="max-w-5xl mx-auto bg-white/70 backdrop-blur-xl p-6 rounded-3xl shadow-2xl border border-white/70">
-        <header class="flex justify-between items-center mb-8 border-b border-teal-200 pb-4">
+    <div class="max-w-5xl mx-auto bg-white/70 backdrop-blur-xl p-6 rounded-3xl shadow-2xl border border-white/70 print-area">
+        <header class="flex justify-between items-center mb-8 border-b border-teal-200 pb-4 no-print">
             <h1 class="text-2xl font-bold text-teal-800">สำหรับคุณครู/ผู้ปกครอง</h1>
             <a href="index.html" class="bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition shadow-md">ย้อนกลับ</a>
         </header>
 
-        <div class="flex flex-wrap gap-2 mb-6">
+        <div class="flex flex-wrap gap-2 mb-6 no-print">
             <button onclick="openModal()" class="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition shadow-md">เปลี่ยนรหัสผ่าน</button>
             <button onclick="copyTable()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition shadow-md">คัดลอกข้อมูล</button>
             <button onclick="exportExcel()" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition shadow-md">บันทึกเป็น Excel</button>
-            <button onclick="exportPDF()" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition shadow-md">บันทึกเป็น PDF</button>
+            <button onclick="window.print()" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition shadow-md">ปริ้นท์ผลคะแนน</button>
             <button onclick="clearData()" class="bg-rose-500 text-white px-4 py-2 rounded-lg hover:bg-rose-600 transition shadow-md">ลบข้อมูลทั้งหมด</button>
         </div>
 
@@ -91,21 +93,6 @@
                     <td class="p-3 border border-teal-200">${item.date}</td>
                 </tr>
             `).join('');
-        }
-
-        // ฟังก์ชันส่งออกเป็น PDF
-        function exportPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            doc.text("รายงานผลคะแนนนักเรียน", 14, 15);
-            doc.autoTable({
-                html: '#scoreTable',
-                startY: 20,
-                theme: 'grid',
-                styles: { font: "helvetica", fontSize: 10 }
-            });
-            doc.save('ScoreData.pdf');
         }
 
         function copyTable() {

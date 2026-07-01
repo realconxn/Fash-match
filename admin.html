@@ -9,8 +9,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         body { background-image: url('IMG_0054.png'); background-size: cover; background-position: center; background-attachment: fixed; }
-        
-        /* สไตล์สำหรับซ่อนส่วนต่างๆ เวลาสั่งพิมพ์ */
         @media print {
             .no-print { display: none !important; }
             body { background: none; background-color: white; }
@@ -20,7 +18,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen p-4 md:p-8">
+<body class="min-h-screen flex flex-col items-center justify-between p-4 md:p-8">
 
     <!-- Modal เปลี่ยนรหัสผ่าน -->
     <div id="passwordModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 no-print">
@@ -39,8 +37,8 @@
         </div>
     </div>
 
-    <!-- ส่วนจัดรูปแบบสำหรับพิมพ์ -->
-    <div class="max-w-5xl mx-auto bg-white/70 backdrop-blur-xl p-6 rounded-3xl shadow-2xl border border-white/70 print-container">
+    <!-- ส่วนหลัก -->
+    <div class="w-full max-w-5xl bg-white/70 backdrop-blur-xl p-6 rounded-3xl shadow-2xl border border-white/70 print-container flex-grow">
         <header class="flex justify-between items-center mb-8 border-b border-teal-200 pb-4 no-print">
             <h1 class="text-2xl font-bold text-teal-800">สำหรับคุณครู/ผู้ปกครอง</h1>
             <a href="index.html" class="bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition shadow-md">ย้อนกลับ</a>
@@ -71,6 +69,11 @@
             </table>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="w-full text-center py-6 text-teal-800 font-bold text-sm no-print">
+        © 2026 - ห้องเรียนจิ๋ว by นันท์
+    </footer>
 
     <script>
         function togglePass(id) { const input = document.getElementById(id); input.type = input.type === 'password' ? 'text' : 'password'; }

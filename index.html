@@ -65,7 +65,7 @@
         }
 
         function forgotPassword() {
-            const secret = prompt("กรุณากรอกเลขยืนยัน (0816):");
+            const secret = prompt("กรุณากรอกเลขยืนยัน:");
             if (secret === "0816") {
                 alert("รหัสผ่านปัจจุบันของคุณคือ: " + localStorage.getItem('adminPassword'));
             } else {

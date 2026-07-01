@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -17,7 +16,12 @@
     <div id="passwordModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
         <div class="bg-white p-6 rounded-2xl w-full max-w-xs shadow-2xl">
             <h2 class="text-lg font-bold mb-4 text-teal-800">เปลี่ยนรหัสผ่านใหม่</h2>
-            <input type="password" id="newPassInput" placeholder="รหัสผ่านใหม่" class="w-full p-3 border rounded-xl mb-4 outline-teal-500">
+            <div class="relative w-full mb-4">
+                <input type="password" id="newPassInput" placeholder="รหัสผ่านใหม่" class="w-full p-3 border rounded-xl outline-teal-500 pr-12">
+                <button type="button" onclick="togglePass('newPassInput')" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                </button>
+            </div>
             <div class="flex gap-2">
                 <button onclick="saveNewPassword()" class="flex-1 bg-teal-500 text-white py-2 rounded-xl font-bold">บันทึก</button>
                 <button onclick="closeModal()" class="flex-1 bg-gray-200 py-2 rounded-xl font-bold">ยกเลิก</button>
@@ -57,19 +61,17 @@
     </div>
 
     <script>
+        function togglePass(id) { const input = document.getElementById(id); input.type = input.type === 'password' ? 'text' : 'password'; }
         function openModal() { document.getElementById('passwordModal').classList.remove('hidden'); }
         function closeModal() { document.getElementById('passwordModal').classList.add('hidden'); }
-
+        
         function saveNewPassword() {
             const newPass = document.getElementById('newPassInput').value;
             if (newPass && newPass.length >= 4) {
                 localStorage.setItem('adminPassword', newPass);
                 alert("เปลี่ยนรหัสผ่านสำเร็จ!");
                 closeModal();
-                document.getElementById('newPassInput').value = '';
-            } else {
-                alert("รหัสผ่านต้องมีอย่างน้อย 4 ตัวอักษร");
-            }
+            } else { alert("รหัสผ่านต้องมีอย่างน้อย 4 ตัวอักษร"); }
         }
 
         function loadData() {
@@ -109,10 +111,7 @@
                 loadData();
             }
         }
-
         loadData();
     </script>
 </body>
 </html>
-
-```

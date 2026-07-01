@@ -9,17 +9,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         body { background-image: url('IMG_0054.png'); background-size: cover; background-position: center; background-attachment: fixed; }
+        
+        /* สไตล์สำหรับซ่อนส่วนต่างๆ เวลาสั่งพิมพ์ */
         @media print {
-            .no-print { display: none; }
-            body { background: none; }
-            .print-area { padding: 0; }
+            .no-print { display: none !important; }
+            body { background: none; background-color: white; }
+            .print-container { width: 100%; margin: 0; padding: 20px; box-shadow: none; border: none; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #000; padding: 8px; }
         }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-8">
 
     <!-- Modal เปลี่ยนรหัสผ่าน -->
-    <div id="passwordModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div id="passwordModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 no-print">
         <div class="bg-white p-6 rounded-2xl w-full max-w-xs shadow-2xl">
             <h2 class="text-lg font-bold mb-4 text-teal-800">เปลี่ยนรหัสผ่านใหม่</h2>
             <div class="relative w-full mb-4">
@@ -35,7 +39,8 @@
         </div>
     </div>
 
-    <div class="max-w-5xl mx-auto bg-white/70 backdrop-blur-xl p-6 rounded-3xl shadow-2xl border border-white/70 print-area">
+    <!-- ส่วนจัดรูปแบบสำหรับพิมพ์ -->
+    <div class="max-w-5xl mx-auto bg-white/70 backdrop-blur-xl p-6 rounded-3xl shadow-2xl border border-white/70 print-container">
         <header class="flex justify-between items-center mb-8 border-b border-teal-200 pb-4 no-print">
             <h1 class="text-2xl font-bold text-teal-800">สำหรับคุณครู/ผู้ปกครอง</h1>
             <a href="index.html" class="bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition shadow-md">ย้อนกลับ</a>
@@ -50,6 +55,7 @@
         </div>
 
         <div class="overflow-x-auto bg-white/50 rounded-xl p-2">
+            <h2 class="text-xl font-bold mb-4 hidden print:block text-black">รายงานคะแนนนักเรียน</h2>
             <table class="w-full text-left border-collapse" id="scoreTable">
                 <thead>
                     <tr class="bg-teal-600 text-white">
@@ -84,7 +90,6 @@
             const data = JSON.parse(localStorage.getItem('studentHistory') || '[]');
             const tbody = document.getElementById('scoreBody');
             tbody.innerHTML = data.map(item => {
-                // แยกเอาเฉพาะส่วนวันที่ (กรณีบันทึกมาแบบ "DD/MM/YYYY HH:MM" หรืออื่นๆ ให้ตัดเอาแค่หน้าแรก)
                 const dateOnly = item.date ? item.date.split(' ')[0] : '-';
                 return `
                     <tr class="border-b border-teal-200 hover:bg-white/50 transition">
@@ -125,3 +130,5 @@
     </script>
 </body>
 </html>
+
+```

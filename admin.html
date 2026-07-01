@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -83,16 +83,20 @@
         function loadData() {
             const data = JSON.parse(localStorage.getItem('studentHistory') || '[]');
             const tbody = document.getElementById('scoreBody');
-            tbody.innerHTML = data.map(item => `
-                <tr class="border-b border-teal-200 hover:bg-white/50 transition">
-                    <td class="p-3 border border-teal-200">${item.name}</td>
-                    <td class="p-3 border border-teal-200">${item.class}</td>
-                    <td class="p-3 border border-teal-200">${item.number}</td>
-                    <td class="p-3 border border-teal-200">${item.score}/10</td>
-                    <td class="p-3 border border-teal-200">${item.time}</td>
-                    <td class="p-3 border border-teal-200">${item.date}</td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = data.map(item => {
+                // แยกเอาเฉพาะส่วนวันที่ (กรณีบันทึกมาแบบ "DD/MM/YYYY HH:MM" หรืออื่นๆ ให้ตัดเอาแค่หน้าแรก)
+                const dateOnly = item.date ? item.date.split(' ')[0] : '-';
+                return `
+                    <tr class="border-b border-teal-200 hover:bg-white/50 transition">
+                        <td class="p-3 border border-teal-200">${item.name}</td>
+                        <td class="p-3 border border-teal-200">${item.class}</td>
+                        <td class="p-3 border border-teal-200">${item.number}</td>
+                        <td class="p-3 border border-teal-200">${item.score}/10</td>
+                        <td class="p-3 border border-teal-200">${item.time}</td>
+                        <td class="p-3 border border-teal-200">${dateOnly}</td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function copyTable() {
@@ -121,5 +125,3 @@
     </script>
 </body>
 </html>
-
-```

@@ -37,8 +37,11 @@
             <input type="text" id="name" placeholder="ชื่อ-นามสกุล" class="w-full p-4 rounded-2xl bg-white/70 border-2 border-white focus:border-sky-400 outline-none shadow-sm transition">
             <input type="text" id="class" placeholder="ชั้น" class="w-full p-4 rounded-2xl bg-white/70 border-2 border-white focus:border-sky-400 outline-none shadow-sm transition">
             <input type="number" id="number" placeholder="เลขที่" class="w-full p-4 rounded-2xl bg-white/70 border-2 border-white focus:border-sky-400 outline-none shadow-sm transition">
-            <!-- ลิงก์ไปหน้า quiz.html โดยตรง -->
-            <a href="quiz.html" class="block w-full bg-sky-500 hover:bg-sky-600 text-white font-bold text-xl py-4 rounded-2xl shadow-lg transition-all transform hover:scale-[1.02]">เริ่มทำแบบทดสอบ</a>
+            
+            <!-- ปุ่มเริ่มทำแบบทดสอบ (ใช้ onclick เพื่อบันทึกข้อมูลก่อนไปหน้าถัดไป) -->
+            <button onclick="startQuiz()" class="block w-full bg-sky-500 hover:bg-sky-600 text-white font-bold text-xl py-4 rounded-2xl shadow-lg transition-all transform hover:scale-[1.02]">
+                เริ่มทำแบบทดสอบ
+            </button>
         </div>
     </div>
 
@@ -73,6 +76,17 @@
     </div>
 
     <script>
+        // ฟังก์ชันเริ่มทำแบบทดสอบ
+        function startQuiz() {
+            const userData = {
+                name: document.getElementById('name').value || "ไม่ระบุชื่อ",
+                cls: document.getElementById('class').value || "-",
+                num: document.getElementById('number').value || "-"
+            };
+            localStorage.setItem('currentUser', JSON.stringify(userData));
+            window.location.href = 'quiz.html';
+        }
+
         if (!localStorage.getItem('adminPass')) localStorage.setItem('adminPass', '0816');
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModals() { document.getElementById('admin-modal').classList.add('hidden'); document.getElementById('forgot-modal').classList.add('hidden'); }

@@ -127,7 +127,7 @@
 
             document.getElementById('quiz-ui').classList.add('hidden');
             document.getElementById('result-ui').classList.remove('hidden');
-            const user = JSON.parse(localStorage.getItem('currentUser') || '{"name":"นักเรียน", "cls":"-", "num":"-"}');
+            const user = JSON.parse(localStorage.getItem('currentUser') || '{"name":"นักเรียน", "class":"-", "number":"-"}');
             document.getElementById('summary-info').innerHTML = `
                 <p>ชื่อ: ${user.name}</p>
                 <p>ชั้น: ${user.cls} เลขที่: ${user.num}</p>

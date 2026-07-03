@@ -1,0 +1,121 @@
+```html
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบทดสอบคณิตศาสตร์</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap');
+        body { 
+            background-image: url('IMG_0054.png'); 
+            background-size: cover; 
+            background-position: center;
+            background-attachment: fixed; 
+            font-family: 'Sarabun', sans-serif; 
+        }
+        .timer-circle { border: 8px solid #0284c7; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4">
+
+    <!-- ปุ่มครู/ผู้ปกครอง -->
+    <div class="fixed top-4 right-4 z-40">
+        <a href="admin.html" class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-full font-bold shadow-lg transition-all">สำหรับครู/ผู้ปกครอง</a>
+    </div>
+
+    <!-- ส่วนหัว -->
+    <div class="w-full max-w-lg bg-white/60 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white text-center mt-8 mb-6">
+        <h1 id="q-count" class="text-2xl font-bold text-sky-900">ข้อที่ 1 / 10</h1>
+    </div>
+
+    <!-- วงกลมจับเวลา -->
+    <div id="timer" class="timer-circle w-28 h-28 rounded-full bg-white flex items-center justify-center text-4xl font-bold text-sky-600 shadow-xl mb-8">10</div>
+
+    <!-- กล่องโจทย์ -->
+    <div class="w-full max-w-lg bg-white/70 backdrop-blur-lg p-8 rounded-3xl shadow-2xl border border-white text-center">
+        <h2 id="question" class="text-6xl font-bold text-slate-800 mb-10">?</h2>
+        <div id="choices" class="grid grid-cols-2 gap-4"></div>
+    </div>
+
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playTone(freq, duration, type = 'sine') {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + duration);
+        }
+
+        const questions = [
+            {q: "2 + 2", a: 4}, {q: "5 + 3", a: 8}, {q: "10 + 5", a: 15}, {q: "7 + 4", a: 11}, {q: "9 + 6", a: 15},
+            {q: "10 - 2", a: 8}, {q: "15 - 5", a: 10}, {q: "8 - 3", a: 5}, {q: "12 - 7", a: 5}, {q: "20 - 4", a: 16}
+        ].sort(() => Math.random() - 0.5);
+
+        let idx = 0, score = 0, time = 10, timer;
+
+        function startTimer() {
+            time = 10;
+            document.getElementById('timer').innerText = time;
+            clearInterval(timer);
+            timer = setInterval(() => {
+                time--;
+                document.getElementById('timer').innerText = time;
+                
+                if (time > 0 && time <= 3) {
+                    playTone(440, 0.2); 
+                }
+                
+                if(time <= 0) handleAnswer(null);
+            }, 1000);
+        }
+
+        function render() {
+            document.getElementById('q-count').innerText = `ข้อที่ ${idx + 1} / 10`;
+            const q = questions[idx];
+            document.getElementById('question').innerText = q.q + " = ?";
+            
+            let opts = [q.a, q.a+2, q.a-3, q.a+5].sort(() => Math.random() - 0.5);
+            document.getElementById('choices').innerHTML = opts.map(c => 
+                `<button onclick="handleAnswer(${c})" class="bg-white p-6 rounded-2xl font-bold text-2xl hover:bg-sky-100 shadow-md transition">${c}</button>`
+            ).join('');
+            startTimer();
+        }
+
+        function handleAnswer(val) {
+            clearInterval(timer);
+            const correct = questions[idx].a;
+            if(val === correct) {
+                score++;
+                playTone(880, 0.3);
+                alert("ถูกต้องครับ! ✅");
+            } else {
+                playTone(200, 0.5, 'sawtooth');
+                alert("ผิดครับ! คำตอบที่ถูกต้องคือ: " + correct + " ❌");
+            }
+            
+            idx++;
+            if(idx < questions.length) render();
+            else finish();
+        }
+
+        function finish() {
+            const history = JSON.parse(localStorage.getItem('studentHistory') || '[]');
+            history.push({name: "นักเรียน", score: score, date: new Date().toLocaleDateString()});
+            localStorage.setItem('studentHistory', JSON.stringify(history));
+            alert("จบแบบทดสอบ คะแนนรวม: " + score + "/10");
+            window.location.href = 'admin.html';
+        }
+        render();
+    </script>
+</body>
+</html>
+
+```

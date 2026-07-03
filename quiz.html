@@ -1,10 +1,10 @@
-```html
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แบบทดสอบคณิตศาสตร์</title>
+    <title>แบบทดสอบ - ห้องเรียนจิ๋ว by นันท์</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap');
@@ -35,8 +35,10 @@
 
     <!-- กล่องโจทย์ -->
     <div class="w-full max-w-lg bg-white/70 backdrop-blur-lg p-8 rounded-3xl shadow-2xl border border-white text-center">
-        <h2 id="question" class="text-6xl font-bold text-slate-800 mb-10">?</h2>
-        <div id="choices" class="grid grid-cols-2 gap-4"></div>
+        <h2 id="question" class="text-6xl font-bold text-slate-800 mb-8">?</h2>
+        <div id="choices" class="grid grid-cols-2 gap-4 mb-6"></div>
+        <!-- พื้นที่แสดงผลลัพธ์ -->
+        <div id="feedback" class="h-16 font-bold text-xl flex items-center justify-center"></div>
     </div>
 
     <script>
@@ -59,29 +61,26 @@
             {q: "10 - 2", a: 8}, {q: "15 - 5", a: 10}, {q: "8 - 3", a: 5}, {q: "12 - 7", a: 5}, {q: "20 - 4", a: 16}
         ].sort(() => Math.random() - 0.5);
 
-        let idx = 0, score = 0, time = 10, timer;
+        let idx = 0, score = 0, time = 10, timer, canAnswer = true;
 
         function startTimer() {
             time = 10;
+            canAnswer = true;
             document.getElementById('timer').innerText = time;
             clearInterval(timer);
             timer = setInterval(() => {
                 time--;
                 document.getElementById('timer').innerText = time;
-                
-                if (time > 0 && time <= 3) {
-                    playTone(440, 0.2); 
-                }
-                
+                if (time > 0 && time <= 3) playTone(440, 0.2);
                 if(time <= 0) handleAnswer(null);
             }, 1000);
         }
 
         function render() {
+            document.getElementById('feedback').innerHTML = "";
             document.getElementById('q-count').innerText = `ข้อที่ ${idx + 1} / 10`;
             const q = questions[idx];
             document.getElementById('question').innerText = q.q + " = ?";
-            
             let opts = [q.a, q.a+2, q.a-3, q.a+5].sort(() => Math.random() - 0.5);
             document.getElementById('choices').innerHTML = opts.map(c => 
                 `<button onclick="handleAnswer(${c})" class="bg-white p-6 rounded-2xl font-bold text-2xl hover:bg-sky-100 shadow-md transition">${c}</button>`
@@ -90,25 +89,34 @@
         }
 
         function handleAnswer(val) {
+            if(!canAnswer) return;
+            canAnswer = false;
             clearInterval(timer);
             const correct = questions[idx].a;
+            const fb = document.getElementById('feedback');
+            
             if(val === correct) {
                 score++;
                 playTone(880, 0.3);
-                alert("ถูกต้องครับ! ✅");
+                fb.className = "h-16 font-bold text-xl flex items-center justify-center text-green-600";
+                fb.innerText = "ถูกต้อง! ✅";
             } else {
                 playTone(200, 0.5, 'sawtooth');
-                alert("ผิดครับ! คำตอบที่ถูกต้องคือ: " + correct + " ❌");
+                fb.className = "h-16 font-bold text-xl flex items-center justify-center text-red-600";
+                fb.innerText = val === null ? "หมดเวลา! ตอบ: " + correct : "ผิด! ตอบ: " + correct + " ❌";
             }
             
-            idx++;
-            if(idx < questions.length) render();
-            else finish();
+            setTimeout(() => {
+                idx++;
+                if(idx < questions.length) render();
+                else finish();
+            }, 1500);
         }
 
         function finish() {
+            const user = JSON.parse(localStorage.getItem('currentUser') || '{"name":"นักเรียน"}');
             const history = JSON.parse(localStorage.getItem('studentHistory') || '[]');
-            history.push({name: "นักเรียน", score: score, date: new Date().toLocaleDateString()});
+            history.push({name: user.name, score: score, date: new Date().toLocaleDateString()});
             localStorage.setItem('studentHistory', JSON.stringify(history));
             alert("จบแบบทดสอบ คะแนนรวม: " + score + "/10");
             window.location.href = 'admin.html';

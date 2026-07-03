@@ -144,8 +144,30 @@
 
         startTime = new Date();
         render();
+        javascript
+function loadData() {
+    const data = JSON.parse(localStorage.getItem('studentHistory') || '[]');
+    const tbody = document.getElementById('scoreBody');
+    
+    tbody.innerHTML = data.map(item => {
+        // บรรทัดนี้คือจุดสำคัญ: เราจะเช็คทุกความเป็นไปได้ของชื่อฟิลด์ครับ
+        const className = item.class || item.cls || item.className || item.level || '-';
+        const number = item.number || item.num || item.no || '-';
+        
+        return `
+            <tr class="border-b border-teal-200 hover:bg-white/50 transition">
+                <td class="p-3 border border-teal-200">${item.name || '-'}</td>
+                <td class="p-3 border border-teal-200">${className}</td>
+                <td class="p-3 border border-teal-200">${number}</td>
+                <td class="p-3 border border-teal-200">${item.score}/10</td>
+                <td class="p-3 border border-teal-200">${item.time || '-'}</td>
+                <td class="p-3 border border-teal-200">${item.date || '-'}</td>
+            </tr>
+        `;
+    }).join('');
+}
     </script>
 </body>
 </html>
 
-```
+

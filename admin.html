@@ -70,7 +70,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="w-full text-center py-6 text-teal-800 font-bold text-sm no-print">
         © 2026 - ห้องเรียนจิ๋ว by นันท์
     </footer>
@@ -92,16 +91,22 @@
         function loadData() {
             const data = JSON.parse(localStorage.getItem('studentHistory') || '[]');
             const tbody = document.getElementById('scoreBody');
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-gray-500">ยังไม่มีข้อมูลนักเรียน</td></tr>';
+                return;
+            }
+
             tbody.innerHTML = data.map(item => {
-                const dateOnly = item.date ? item.date.split(' ')[0] : '-';
+                // ดึงค่าออกมา (ใช้ชื่อ field ให้ตรงกับที่บันทึกใน quiz.html)
                 return `
                     <tr class="border-b border-teal-200 hover:bg-white/50 transition">
-                        <td class="p-3 border border-teal-200">${item.name}</td>
-                        <td class="p-3 border border-teal-200">${item.class}</td>
-                        <td class="p-3 border border-teal-200">${item.number}</td>
+                        <td class="p-3 border border-teal-200">${item.name || '-'}</td>
+                        <td class="p-3 border border-teal-200">${item.class || '-'}</td>
+                        <td class="p-3 border border-teal-200">${item.number || '-'}</td>
                         <td class="p-3 border border-teal-200">${item.score}/10</td>
-                        <td class="p-3 border border-teal-200">${item.time}</td>
-                        <td class="p-3 border border-teal-200">${dateOnly}</td>
+                        <td class="p-3 border border-teal-200">${item.time || '-'}</td>
+                        <td class="p-3 border border-teal-200">${item.date || '-'}</td>
                     </tr>
                 `;
             }).join('');
@@ -109,7 +114,7 @@
 
         function copyTable() {
             const table = document.getElementById('scoreTable');
-            let range = document.createRange();
+            const range = document.createRange();
             range.selectNode(table);
             window.getSelection().removeAllRanges();
             window.getSelection().addRange(range);
@@ -119,7 +124,7 @@
 
         function exportExcel() {
             const table = document.getElementById('scoreTable');
-            const wb = XLSX.utils.table_to_book(table);
+            const wb = XLSX.utils.table_to_book(table, {sheet: "Scores"});
             XLSX.writeFile(wb, 'ScoreData.xlsx');
         }
 

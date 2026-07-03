@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -38,7 +38,7 @@
             <input type="text" id="class" placeholder="ชั้น" class="w-full p-4 rounded-2xl bg-white/70 border-2 border-white focus:border-sky-400 outline-none shadow-sm transition">
             <input type="number" id="number" placeholder="เลขที่" class="w-full p-4 rounded-2xl bg-white/70 border-2 border-white focus:border-sky-400 outline-none shadow-sm transition">
             
-            <!-- ปุ่มเริ่มทำแบบทดสอบ (ใช้ onclick เพื่อบันทึกข้อมูลก่อนไปหน้าถัดไป) -->
+            <!-- ปุ่มเปลี่ยนเป็น onclick เพื่อเช็คข้อมูลก่อนไป quiz.html -->
             <button onclick="startQuiz()" class="block w-full bg-sky-500 hover:bg-sky-600 text-white font-bold text-xl py-4 rounded-2xl shadow-lg transition-all transform hover:scale-[1.02]">
                 เริ่มทำแบบทดสอบ
             </button>
@@ -76,15 +76,17 @@
     </div>
 
     <script>
-        // ฟังก์ชันเริ่มทำแบบทดสอบ
         function startQuiz() {
-            const userData = {
-                name: document.getElementById('name').value || "ไม่ระบุชื่อ",
-                cls: document.getElementById('class').value || "-",
-                num: document.getElementById('number').value || "-"
-            };
-            localStorage.setItem('currentUser', JSON.stringify(userData));
-            window.location.href = 'quiz.html';
+            const name = document.getElementById('name').value;
+            const cls = document.getElementById('class').value;
+            const num = document.getElementById('number').value;
+            
+            if(name === "" || cls === "" || num === "") {
+                alert("กรุณากรอกข้อมูลให้ครบก่อนเริ่มนะครับ");
+            } else {
+                localStorage.setItem('currentUser', JSON.stringify({name, cls, num}));
+                window.location.href = 'quiz.html';
+            }
         }
 
         if (!localStorage.getItem('adminPass')) localStorage.setItem('adminPass', '0816');

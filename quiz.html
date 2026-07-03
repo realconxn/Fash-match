@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -19,7 +20,7 @@
 </head>
 <body class="min-h-screen flex flex-col items-center p-4">
 
-    <!-- ปุ่มครู -->
+    <!-- ปุ่มสำหรับครู -->
     <div class="fixed top-4 right-4 z-40">
         <a href="admin.html" class="bg-pink-500 text-white px-5 py-2 rounded-full text-sm font-bold shadow-lg">สำหรับครู/ผู้ปกครอง</a>
     </div>
@@ -47,7 +48,8 @@
 
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
+        let startTime;
+
         function playTone(freq, duration, type = 'sine') {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
@@ -118,21 +120,29 @@
         }
 
         function finish() {
+            const endTime = new Date();
+            const timeDiff = Math.floor((endTime - startTime) / 1000);
+            const minutes = Math.floor(timeDiff / 60);
+            const seconds = timeDiff % 60;
+
             document.getElementById('quiz-ui').classList.add('hidden');
             document.getElementById('result-ui').classList.remove('hidden');
             const user = JSON.parse(localStorage.getItem('currentUser') || '{"name":"นักเรียน", "cls":"-", "num":"-"}');
             document.getElementById('summary-info').innerHTML = `
                 <p>ชื่อ: ${user.name}</p>
                 <p>ชั้น: ${user.cls} เลขที่: ${user.num}</p>
-                <p class="text-4xl font-bold text-sky-700 mt-2">${score} / 10 คะแนน</p>
+                <p class="text-3xl font-bold text-sky-700 mt-2">${score} / 10 คะแนน</p>
+                <p class="text-lg font-bold text-gray-600 mt-1">ใช้เวลาทำ: ${minutes} นาที ${seconds} วินาที</p>
             `;
             let stars = "";
             for(let i=0; i < Math.ceil(score/2); i++) stars += "★";
             document.getElementById('stars').innerText = stars;
             const history = JSON.parse(localStorage.getItem('studentHistory') || '[]');
-            history.push({name: user.name, score: score, date: new Date().toLocaleDateString()});
+            history.push({name: user.name, score: score, time: `${minutes}น. ${seconds}ว.`, date: new Date().toLocaleDateString()});
             localStorage.setItem('studentHistory', JSON.stringify(history));
         }
+
+        startTime = new Date();
         render();
     </script>
 </body>

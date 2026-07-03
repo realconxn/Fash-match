@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>คณิตคิดเร็ว - ห้องเรียนจิ๋ว</title>
+    <title>คณิตคิดเร็ว - ห้องเรียนจิ๋ว by นันท์</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap');
@@ -37,7 +37,8 @@
             <input type="text" id="name" placeholder="ชื่อ-นามสกุล" class="w-full p-4 rounded-2xl bg-white/70 border-2 border-white focus:border-sky-400 outline-none shadow-sm transition">
             <input type="text" id="class" placeholder="ชั้น" class="w-full p-4 rounded-2xl bg-white/70 border-2 border-white focus:border-sky-400 outline-none shadow-sm transition">
             <input type="number" id="number" placeholder="เลขที่" class="w-full p-4 rounded-2xl bg-white/70 border-2 border-white focus:border-sky-400 outline-none shadow-sm transition">
-            <button onclick="startGame()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold text-xl py-4 rounded-2xl shadow-lg transition-all transform hover:scale-[1.02]">เริ่มทำแบบทดสอบ</button>
+            <!-- ลิงก์ไปหน้า quiz.html โดยตรง -->
+            <a href="quiz.html" class="block w-full bg-sky-500 hover:bg-sky-600 text-white font-bold text-xl py-4 rounded-2xl shadow-lg transition-all transform hover:scale-[1.02]">เริ่มทำแบบทดสอบ</a>
         </div>
     </div>
 
@@ -76,16 +77,6 @@
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModals() { document.getElementById('admin-modal').classList.add('hidden'); document.getElementById('forgot-modal').classList.add('hidden'); }
         function togglePass(id) { const input = document.getElementById(id); input.type = input.type === 'password' ? 'text' : 'password'; }
-
-        function startGame() {
-            const name = document.getElementById('name').value;
-            const cls = document.getElementById('class').value;
-            const num = document.getElementById('number').value;
-            
-            // นำการเช็ค alert ออกเพื่อให้เปลี่ยนหน้าทันที
-            localStorage.setItem('currentUser', JSON.stringify({name, cls, num}));
-            window.location.href = 'quiz.html';
-        }
 
         function checkAdmin() {
             if (document.getElementById('admin-pass').value === localStorage.getItem('adminPass')) window.location.href = 'admin.html';

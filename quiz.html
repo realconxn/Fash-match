@@ -166,6 +166,26 @@ function loadData() {
         `;
     }).join('');
 }
+            // 1. ดึงข้อมูลนักเรียนจากที่บันทึกไว้ในหน้าแรก
+const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+// 2. ดึงประวัติเก่าทั้งหมดออกมา
+const history = JSON.parse(localStorage.getItem('studentHistory') || '[]');
+
+// 3. เพิ่มรอบใหม่นี้เข้าไป
+history.push({
+    name: user.name || "ไม่ระบุชื่อ",
+    class: user.cls || "-",       // ต้องให้ตรงกับ ID ในหน้าแรก
+    number: user.num || "-",      // ต้องให้ตรงกับ ID ในหน้าแรก
+    score: score,                 // ตัวแปรคะแนนของคุณ
+    time: `${minutes} นาที ${seconds} วินาที`, // เวลาที่ทำ
+    date: new Date().toLocaleDateString()
+});
+
+// 4. บันทึกลง localStorage เพื่อให้หน้า admin ดึงไปใช้ได้
+localStorage.setItem('studentHistory', JSON.stringify(history));
+
+
     </script>
 </body>
 </html>
